@@ -49,11 +49,12 @@ $('toggle').onclick = async () => {
   const sender = transceiver.sender;
   const params = sender.getParameters();
   params.encodings[0].codec = params.codecs.find(c => c.mimeType === 'video/' + next);
+  console.log(`Switching codec ${codec} -> ${next}`);
   try {
     await sender.setParameters(params);
   } catch (e) {
-    // No per-encoding codec support (e.g. Firefox): reorder preferences and renegotiate.
-    console.warn('setParameters codec switch failed, renegotiating:', e);
+    // No per-encoding codec support: reorder preferences and renegotiate.
+    alert('setParameters codec switch failed, renegotiating: ' + e);
     transceiver.setCodecPreferences(codecsFor([next, codec, 'rtx']));
     await negotiate();
   }
